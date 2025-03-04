@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Validator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f7f6;
+        }
+        h2 {
+            color: #333;
+        }
+        input {
+            padding: 10px;
+            width: 250px;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        p {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Email Validator</h2>
+    <input type="text" id="email" placeholder="Enter email" />
+    <button onclick="validateEmail()">Check Email</button>
+
+    <p id="result"></p>
+
+    <script>
+        function validateEmail() {
+            var email = document.getElementById("email").value;
+            if (email === "") {
+                document.getElementById("result").innerText = "Please enter an email address.";
+                return;
+            }
+
+            // API URL
+            var apiUrl = `https://web-production-7f72.up.railway.app/validate-email?email=${email}`;
+
+            // Make the request to the API
+            fetch(apiUrl)
+                .then(response => {
+                    console.log("API Response Status: " + response.status);  // Log the response status
+                    return response.json();  // Parse the JSON response
+                })
+                .then(data => {
+                    console.log("API Response Data: ", data);  // Log the parsed response data
+
+                    if (data.valid) {  // Check if the email is valid
+                        document.getElementById("result").innerText = `✅ Valid Email: ${data.email} (${data.reason})`;
+                        document.getElementById("result").style.color = "green";
+                    } else {
+                        document.getElementById("result").innerText = `❌ Invalid Email: ${data.email} (${data.reason})`;
+                        document.getElementById("result").style.color = "red";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById("result").innerText = "Error: Unable to validate email.";
+                    document.getElementById("result").style.color = "red";
+                });
+        }
+    </script>
+
+</body>
+</html>
